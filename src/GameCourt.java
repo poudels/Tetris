@@ -173,8 +173,8 @@ public class GameCourt extends JPanel {
 		setBackground(new Color(200, 200, 200));
 		for (int i = 0; i < gridHeight; i++) {
 			for (int j = 0; j < gridWidth; j++) {
-				cellEmpty[i][j] = false;
-				gridCell[i][j] = new EmptyCell(i, j, 20, Color.CYAN);
+				cellEmpty[i][j] = true;
+				gridCell[i][j] = new EmptyCell(i * cellSize, j * cellSize, 20, Color.CYAN);
 			}
 		}
 

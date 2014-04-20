@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class GameCourt extends JPanel {
-	private final int COURT_HEIGHT = 600;
-	private final int COURT_WIDTH = 300;
+	private final int COURT_HEIGHT = 400;
+	private final int COURT_WIDTH = 280;
 	private final int cellSize = 20;
 	private boolean isFalling = true;
 	private final int INTERVAL = 250;
@@ -82,8 +82,8 @@ public class GameCourt extends JPanel {
 			for (int i = 0; i < 4; i++) {
 				int x = ce[i].getI();
 				int y = ce[i].getJ();
-				System.out.println("x = " + x);
-				System.out.println("y = " + y);
+//				System.out.println("x = " + x);
+//				System.out.println("y = " + y);
 
 				int f = y;
 				if (f < gridHeight - 1) {
@@ -130,8 +130,8 @@ public class GameCourt extends JPanel {
 		for (int i = 0; i < 4; i++) {
 			int x = ce[i].getI();
 			int y = ce[i].getJ();
-			System.out.println("x = " + x);
-			System.out.println("y = " + y);
+//			System.out.println("x = " + x);
+//			System.out.println("y = " + y);
 
 			int f = x;
 			if (f < gridWidth - 1) {
@@ -151,8 +151,8 @@ public class GameCourt extends JPanel {
 		for (int i = 0; i < 4; i++) {
 			int x = ce[i].getI();
 			int y = ce[i].getJ();
-			System.out.println("x = " + x);
-			System.out.println("y = " + y);
+//			System.out.println("x = " + x);
+//			System.out.println("y = " + y);
 
 			int f = x;
 			if (f > 0) {
@@ -165,7 +165,12 @@ public class GameCourt extends JPanel {
 		}
 		fallObj.stepLeft();
 	}
-
+	
+//	private void stepDown() {
+//		INTERVAL = 
+//	}
+	
+	
 	public GameCourt() {
 		System.out.println("Height = " + gridHeight);
 		System.out.println("Width = " + gridWidth);
@@ -181,7 +186,7 @@ public class GameCourt extends JPanel {
 		setFocusable(true);
 
 		// initiate the timer
-		Timer timer = new Timer(INTERVAL, new ActionListener() {
+		final Timer timer = new Timer(INTERVAL, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -200,14 +205,20 @@ public class GameCourt extends JPanel {
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					System.out.println("Right");
 					stepRight();
-				} else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					System.out.println("Down");
-				else if (e.getKeyCode() == KeyEvent.VK_UP)
+					timer.setDelay(20);
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_UP) {
 					System.out.println("Up");
+					fallObj.rotate();
+				}
 			}
 
 			public void keyReleased(KeyEvent e) {
-
+				if(e.getKeyCode() == KeyEvent.VK_DOWN){
+					timer.setDelay(INTERVAL);
+				}
 			}
 		});
 	}

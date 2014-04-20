@@ -44,6 +44,10 @@ public class LineShape implements Shape {
 		POS_Y += scale;
 	}
 
+	public void rotate(){
+		
+	}
+	
 	public int getPosX() {
 		return POS_X;
 	}

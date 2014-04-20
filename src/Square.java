@@ -24,9 +24,23 @@ public class Square implements Shape {
 	public void draw(Graphics gc) {
 		gc.setColor(color);
 		gc.fill3DRect(POS_X, POS_Y, scale, scale, true);
+		gc.setColor(new Color(153, 104, 54));
+		gc.fillRect(POS_X + 4, POS_Y + 4, 12, 12);
+		
+		gc.setColor(color);
 		gc.fill3DRect(POS_X + scale, POS_Y, scale, scale, true);
+		gc.setColor(new Color(153, 104, 54));
+		gc.fill3DRect(POS_X + 4 + scale, POS_Y + 4, 12, 12, true);
+		
+		gc.setColor(color);
 		gc.fill3DRect(POS_X, POS_Y + scale, scale, scale, true);
+		gc.setColor(new Color(153, 104, 54));
+		gc.fill3DRect(POS_X + 4, POS_Y + 4 + scale, 12, 12, true);
+		
+		gc.setColor(color);
 		gc.fill3DRect(POS_X + scale, POS_Y + scale, scale, scale, true);
+		gc.setColor(new Color(153, 104, 54));
+		gc.fill3DRect(POS_X + 4 + scale, POS_Y + 4 + scale, 12, 12, true);
 	}
 	
 	public void stepRight() {
@@ -43,6 +57,10 @@ public class Square implements Shape {
 	
 	public void stepDown() {
 		POS_Y += scale;
+	}
+	
+	public void rotate(){
+		
 	}
 	
 	public int getPosX() {

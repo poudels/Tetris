@@ -7,5 +7,6 @@ public interface Shape {
 	public void stepDown();
 	public void stepRight();
 	public void stepLeft();
+	public void rotate();
 	public FilledCell[] getCell();
 }

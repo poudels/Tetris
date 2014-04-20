@@ -13,6 +13,24 @@ public class ZShape implements Shape{
 	private int POS_X = i * scale;
 	private int POS_Y = j * scale;
 	
+	
+	private int[][] getRotateX() {
+		int[][] out = {
+				{ getPosX(), getPosX() - scale, getPosX() + scale, getPosX() },
+				{ getPosX(), getPosX(), getPosX() + scale, getPosX() },
+				{ getPosX(), getPosX(), getPosX() + scale, getPosX() - scale },
+				{ getPosX(), getPosX(), getPosX(), getPosX() - scale } };
+		return out;
+	}
+
+	private int[][] getRotateY() {
+		int[][] out = { { getPosY(), getPosY(), getPosY(), getPosY() + scale },
+				{ getPosY(), getPosY() - scale, getPosY(), getPosY() + scale },
+				{ getPosY(), getPosY() - scale, getPosY(), getPosY() },
+				{ getPosY(), getPosY() - scale, getPosY() + scale, getPosY() } };
+		return out;
+	}
+	
 	public ZShape(){
 		int x = (int) Math.round(Math.random() * 4);
 		color = new CellColor(x);
@@ -42,6 +60,14 @@ public class ZShape implements Shape{
 	
 	public void rotate(){
 		
+	}
+	
+	public int getPosX() {
+		return POS_X;
+	}
+	
+	public int getPosY() {
+		return POS_Y;
 	}
 	
 	public FilledCell[] getCell() {

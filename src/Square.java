@@ -1,82 +1,23 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.util.LinkedList;
-
-
-
-public class Square implements Shape {
-//	
-//	LinkedList<Shape> allItems = new LinkedList<Shape>();
-	private int i = 4;
-	private int j = -1;
-	private int scale = 20;
+public class Square extends SShape {
 	
-	private int POS_X = i * scale;
-	private int POS_Y = j * scale;
-	
-	private CellColor color;
-	
-	public Square(){
-		int x = (int) Math.round(Math.random() * 4);
-		color = new CellColor(x);
+	@Override
+	protected int[][] orientX() {
+		int[][] out = {
+				{getPosX(), getPosX() + scale, getPosX() + scale, getPosX()}
+			};
+		return out;
 	}
 	
-	public void draw(Graphics gc) {
-		gc.setColor(color);
-		gc.fill3DRect(POS_X, POS_Y, scale, scale, true);
-		gc.setColor(new Color(153, 104, 54));
-		gc.fillRect(POS_X + 4, POS_Y + 4, 12, 12);
-		
-		gc.setColor(color);
-		gc.fill3DRect(POS_X + scale, POS_Y, scale, scale, true);
-		gc.setColor(new Color(153, 104, 54));
-		gc.fill3DRect(POS_X + 4 + scale, POS_Y + 4, 12, 12, true);
-		
-		gc.setColor(color);
-		gc.fill3DRect(POS_X, POS_Y + scale, scale, scale, true);
-		gc.setColor(new Color(153, 104, 54));
-		gc.fill3DRect(POS_X + 4, POS_Y + 4 + scale, 12, 12, true);
-		
-		gc.setColor(color);
-		gc.fill3DRect(POS_X + scale, POS_Y + scale, scale, scale, true);
-		gc.setColor(new Color(153, 104, 54));
-		gc.fill3DRect(POS_X + 4 + scale, POS_Y + 4 + scale, 12, 12, true);
+	@Override
+	protected int[][] orientY() {
+		int[][] out = {
+				{getPosY(), getPosY(), getPosY() - scale, getPosY() - scale}
+			};
+		return out;
 	}
 	
-	public void stepRight() {
-//		if(POS_X >= COURT_WIDTH - 2 * scale)
-//			return;
-		POS_X += scale;
-	}
-	
-	public void stepLeft() {
-//		if (POS_X <= 0)
-//			return;
-		POS_X -= scale;
-	}
-	
-	public void stepDown() {
-		POS_Y += scale;
-	}
-	
+	@Override
 	public void rotate(){
 		
-	}
-	
-	public int getPosX() {
-		return POS_X;
-	}
-	
-	public int getPosY() {
-		return POS_Y;
-	}
-	
-	public FilledCell[] getCell() {
-		
-		FilledCell[] c = {new FilledCell(POS_X, POS_Y, scale, color),
-				new FilledCell(POS_X + scale, POS_Y, scale, color),
-				new FilledCell(POS_X, POS_Y + scale, scale, color),
-				new FilledCell(POS_X + scale, POS_Y + scale, scale, color)};
-		return c;
 	}
 }

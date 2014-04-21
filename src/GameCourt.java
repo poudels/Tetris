@@ -1,16 +1,14 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimerTask;
+import java.io.ObjectInputStream.GetField;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -21,12 +19,17 @@ public class GameCourt extends JPanel {
 	private boolean isFalling = true;
 	private final int INTERVAL = 250;
 
-	private Shape fallObj = new LLShape();
+	private Shape fallObj;
+	private Shape nextFallObj;
+	
+	private NextObjectDisplay nextObjectDisplay;
+	
 	private final int gridWidth = COURT_WIDTH / cellSize;
 	private final int gridHeight = COURT_HEIGHT / cellSize;
 
 	private boolean[][] cellEmpty = new boolean[gridHeight][gridWidth];
 	private Cell[][] gridCell = new Cell[gridHeight][gridWidth];
+	private JLabel showLines;
 	private int linesCompleted = 0;
 
 	@Override
@@ -34,6 +37,10 @@ public class GameCourt extends JPanel {
 		super.paintComponent(g);
 		if (isFalling) {
 			fallObj.draw(g);
+//			Graphics2D gc = (Graphics2D) nextObjectDisplay.getGraphics();
+//			nextFallObj.draw(gc);
+			
+			
 		}
 		for (int i = 0; i < gridHeight; i++) {
 			for (int j = 0; j < gridWidth; j++) {
@@ -62,6 +69,10 @@ public class GameCourt extends JPanel {
 
 			if (isFilled) {
 				linesCompleted += 1;
+				showLines.setText(" Lines = " + linesCompleted);
+//				nextObjectDisplay.setObject(nextFallObj);
+//				nextObjectDisplay.repaint();
+				System.out.println("Lines Completed = " + linesCompleted);
 				for (int k = i; k > 0; k--) {
 					if (k == 0)
 						continue;
@@ -99,7 +110,9 @@ public class GameCourt extends JPanel {
 					System.out.println("Object Landed");
 					addCellToGrid(ce);
 					checkGame();
-					makeNewObj();
+					fallObj = makeNewObj();
+					nextObjectDisplay.setObject(nextFallObj);
+					nextObjectDisplay.repaint();
 					return;
 				}
 
@@ -110,17 +123,48 @@ public class GameCourt extends JPanel {
 
 	}
 
-	private void makeNewObj() {
+	private Shape makeNewObj() {
+		Shape out;
 		Shape s1 = new ZShape();
 		Shape s2 = new Square();
 		Shape s3 = new LineShape();
 		Shape s4 = new TShape();
+		Shape s5 = new RLShape();
+		Shape s6 = new LLShape();
+		Shape[] shapes = {s1, s2, s3, s4, s5, s6};
 		
-		int x = (int) Math.round(3 * Math.random());
-		Shape[] sha = {s1, s2, s3, s4};
-		fallObj = sha[x];
+		int a = (int) Math.round(5 * Math.random());
+		out = shapes[a];
+		
+//		nextObjectDisplay.setObject(nextFallObj);
+//		nextObjectDisplay.repaint();
+		
+		if(nextFallObj != null){
+			System.out.println("Next Object is not null");
+			Shape temp = nextFallObj;
+			nextFallObj = out;
+			return temp;
+		}
+		else {
+			System.out.println("Next Object null");
+			int b = (int) Math.round(5 * Math.random());
+			nextFallObj = shapes[b];
+			if(nextFallObj != null){
+				System.out.println("Next Object created");
+			}
+			return out;
+		}
 	}
 
+	
+	public Shape getNextObject() {
+		return nextFallObj;
+	}
+	
+	public int getLines() {
+		return linesCompleted;
+	}
+	
 	private void addCellToGrid(Cell[] cell) {
 		for (int i = 0; i < cell.length; i++) {
 			int x = cell[i].getI();
@@ -157,8 +201,6 @@ public class GameCourt extends JPanel {
 		for (int i = 0; i < 4; i++) {
 			int x = ce[i].getI();
 			int y = ce[i].getJ();
-//			System.out.println("x = " + x);
-//			System.out.println("y = " + y);
 
 			int f = x;
 			if (f > 0) {
@@ -172,12 +214,15 @@ public class GameCourt extends JPanel {
 		fallObj.stepLeft();
 	}
 	
-//	private void stepDown() {
-//		INTERVAL = 
-//	}
 	
-	
-	public GameCourt() {
+	public GameCourt(NextObjectDisplay nextObject, JLabel level, JLabel lines, JLabel score) {
+		showLines = lines;
+		
+		fallObj = makeNewObj();
+		
+		nextObjectDisplay = nextObject;
+		nextObjectDisplay.setObject(nextFallObj);
+		
 		System.out.println("Height = " + gridHeight);
 		System.out.println("Width = " + gridWidth);
 

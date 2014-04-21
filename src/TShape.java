@@ -1,5 +1,3 @@
-import java.awt.Graphics;
-
 public class TShape extends SShape {
 
 	protected int[][] orientX() {

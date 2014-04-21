@@ -1,10 +1,8 @@
-
 public class LLShape extends SShape{
 	
 	public LLShape(){
 		super();
 	}
-	
 	
 	@Override
 	protected int[][] orientX() {

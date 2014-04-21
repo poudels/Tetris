@@ -30,7 +30,6 @@ public class SShape implements Shape{
 
 	public void draw(Graphics gc) {
 		gc.setColor(color);
-		gc.setColor(color);
 		for(int i = 0; i < 4; i++){
 			gc.fill3DRect(orientX()[orient][i], orientY()[orient][i], scale, scale, true);
 		}

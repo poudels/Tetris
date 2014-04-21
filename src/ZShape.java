@@ -12,22 +12,28 @@ public class ZShape implements Shape{
 	private CellColor color;
 	private int POS_X = i * scale;
 	private int POS_Y = j * scale;
+	private int orient = 0;
 	
+	FilledCell[] c = {new FilledCell(POS_X + scale, POS_Y, scale, color),
+			new FilledCell(POS_X + 2 * scale, POS_Y, scale, color),
+			new FilledCell(POS_X, POS_Y + scale, scale, color),
+			new FilledCell(POS_X + scale, POS_Y + scale, scale, color)};
 	
-	private int[][] getRotateX() {
+	private int[][] orientX() {
 		int[][] out = {
-				{ getPosX(), getPosX() - scale, getPosX() + scale, getPosX() },
-				{ getPosX(), getPosX(), getPosX() + scale, getPosX() },
-				{ getPosX(), getPosX(), getPosX() + scale, getPosX() - scale },
-				{ getPosX(), getPosX(), getPosX(), getPosX() - scale } };
+				{ getPosX(), getPosX() - scale, getPosX(), getPosX() + scale},
+				{ getPosX(), getPosX(), getPosX() + scale, getPosX() + scale},
+				{ getPosX(), getPosX()  + scale, getPosX(), getPosX() - scale },
+				{ getPosX(), getPosX(), getPosX() - scale, getPosX() - scale } };
 		return out;
 	}
 
-	private int[][] getRotateY() {
-		int[][] out = { { getPosY(), getPosY(), getPosY(), getPosY() + scale },
+	private int[][] orientY() {
+		int[][] out = {
+				{ getPosY(), getPosY(), getPosY() - scale, getPosY() - scale },
 				{ getPosY(), getPosY() - scale, getPosY(), getPosY() + scale },
-				{ getPosY(), getPosY() - scale, getPosY(), getPosY() },
-				{ getPosY(), getPosY() - scale, getPosY() + scale, getPosY() } };
+				{ getPosY(), getPosY(), getPosY() + scale, getPosY() + scale},
+				{ getPosY(), getPosY() + scale, getPosY(), getPosY() - scale} };
 		return out;
 	}
 	
@@ -38,10 +44,13 @@ public class ZShape implements Shape{
 	
 	public void draw(Graphics gc) {
 		gc.setColor(color);
-		gc.fill3DRect(POS_X + scale, POS_Y, scale, scale, true);
-		gc.fill3DRect(POS_X + 2 * scale, POS_Y, scale, scale, true);
-		gc.fill3DRect(POS_X, POS_Y + scale, scale, scale, true);
-		gc.fill3DRect(POS_X + scale, POS_Y + scale, scale, scale, true);
+		for(int i = 0; i < 4; i++){
+			gc.fill3DRect(orientX()[orient][i], orientY()[orient][i], scale, scale, true);
+		}
+//		gc.fill3DRect(POS_X + scale, POS_Y, scale, scale, true);
+//		gc.fill3DRect(POS_X + 2 * scale, POS_Y, scale, scale, true);
+//		gc.fill3DRect(POS_X, POS_Y + scale, scale, scale, true);
+//		gc.fill3DRect(POS_X + scale, POS_Y + scale, scale, scale, true);
 	}
 	
 	public void stepRight() {
@@ -49,8 +58,6 @@ public class ZShape implements Shape{
 	}
 	
 	public void stepLeft() {
-//		if (POS_X < scale)
-//			return;
 		POS_X = POS_X - scale;
 	}
 	
@@ -59,7 +66,7 @@ public class ZShape implements Shape{
 	}
 	
 	public void rotate(){
-		
+		orient = (orient + 1) % 4;
 	}
 	
 	public int getPosX() {
@@ -71,11 +78,16 @@ public class ZShape implements Shape{
 	}
 	
 	public FilledCell[] getCell() {
-		
-		FilledCell[] c = {new FilledCell(POS_X + scale, POS_Y, scale, color),
-				new FilledCell(POS_X + 2 * scale, POS_Y, scale, color),
-				new FilledCell(POS_X, POS_Y + scale, scale, color),
-				new FilledCell(POS_X + scale, POS_Y + scale, scale, color)};
+		FilledCell[] c = new FilledCell[4];
+		for (int i = 0; i < 4; i++) {
+			c[i] = new FilledCell(orientX()[orient][i], orientY()[orient][i], scale, color);
+		}
 		return c;
+//		
+//		FilledCell[] c = {new FilledCell(POS_X + scale, POS_Y, scale, color),
+//				new FilledCell(POS_X + 2 * scale, POS_Y, scale, color),
+//				new FilledCell(POS_X, POS_Y + scale, scale, color),
+//				new FilledCell(POS_X + scale, POS_Y + scale, scale, color)};
+//		return c;
 	}
 }

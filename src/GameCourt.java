@@ -21,7 +21,7 @@ public class GameCourt extends JPanel {
 	private boolean isFalling = true;
 	private final int INTERVAL = 250;
 
-	private Shape fallObj = new Square();
+	private Shape fallObj = new LLShape();
 	private final int gridWidth = COURT_WIDTH / cellSize;
 	private final int gridHeight = COURT_HEIGHT / cellSize;
 
@@ -89,8 +89,14 @@ public class GameCourt extends JPanel {
 				if (f < gridHeight - 1) {
 					f = y + 1;
 				}
+				
+				if (f < 0){
+					f = 0;
+				}
 				// check if next bottom grid is empty or not
+				System.out.println("f = " + f + "Grid Height = " + gridHeight);
 				if (!cellEmpty[f][x] || y >= gridHeight - 1) {
+					System.out.println("Object Landed");
 					addCellToGrid(ce);
 					checkGame();
 					makeNewObj();

@@ -9,4 +9,5 @@ public interface Shape {
 	public void stepLeft();
 	public void rotate();
 	public FilledCell[] getCell();
+	public FilledCell[] getRotationCell();
 }

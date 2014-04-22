@@ -3,7 +3,7 @@ import java.awt.Graphics;
 
 public class SShape implements Shape{
 	
-	private int i = 4;
+	private int i = 7;
 	private int j = -1;
 	protected int scale = 20;
 
@@ -63,6 +63,15 @@ public class SShape implements Shape{
 		FilledCell[] c = new FilledCell[4];
 		for (int i = 0; i < 4; i++) {
 			c[i] = new FilledCell(orientX()[orient][i], orientY()[orient][i], scale, color);
+		}
+		return c;
+	}
+	
+	public FilledCell[] getRotationCell(){
+		FilledCell[] c = new FilledCell[4];
+		int o = (orient + 1) % 4;
+		for (int i = 0; i < 4; i++) {
+			c[i] = new FilledCell(orientX()[o][i], orientY()[o][i], scale, color);
 		}
 		return c;
 	}

@@ -18,7 +18,7 @@ public class GameCourt extends JPanel {
 	private final int COURT_WIDTH = 280;
 	private final int cellSize = 20;
 	private boolean playing = true;
-	private int INTERVAL = 400;
+	private int[] INTERVAL = {0, 250, 200, 150, 100, 50};
 	private Timer timer;
 
 	private Shape fallObj;
@@ -31,29 +31,39 @@ public class GameCourt extends JPanel {
 
 	private boolean[][] cellEmpty = new boolean[gridHeight][gridWidth];
 	private Cell[][] gridCell = new Cell[gridHeight][gridWidth];
-	private JLabel showLines;
-	private JLabel jlevel;
+	private Dashboard dashboard;
 	private int level;
+	private int score = 0;
 	private int linesCompleted = 0;
 	private JPanel gameOver;
 	private JLayeredPane lPane;
 
-	private int getInterval() {
-		return INTERVAL;
-	}
-
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (playing) {
-			fallObj.draw(g);
-		}
+		
 		for (int i = 0; i < gridHeight; i++) {
 			for (int j = 0; j < gridWidth; j++) {
-				if (!cellEmpty[i][j]) {
+				try {
 					gridCell[i][j].draw(g);
+					if (!cellEmpty[i][j]) {
+						Cell d = new FilledCell(i * 20, j * 20, 20, Color.RED);
+						gridCell[i][j].draw(g);
+					}
+					//if empty draw empty squares
+					else{
+//						gridCell[i][j].draw(g);
+					}
+				}
+				catch(Exception e){
+					System.out.println("Value of i = "+ i);
+					System.out.println("Value of j = " + j);
 				}
 			}
+		}
+		// draw falling object
+		if (playing) {
+			fallObj.draw(g);
 		}
 	}
 
@@ -61,14 +71,31 @@ public class GameCourt extends JPanel {
 	public Dimension getPreferredSize() {
 		return new Dimension(COURT_WIDTH, COURT_HEIGHT);
 	}
-
+	
+	private void updateScore(int lines){
+		int out = 0;
+		if(lines == 1){
+			out = 40 * (level + 1);
+		}
+		else if(lines == 2){
+			out = 100 * (level + 1);
+		}
+		else if(lines == 3){
+			out = 300 * (level + 1);
+		}
+		else if(lines == 4){
+			out = 1200 * (level + 1);
+		}
+		score += out;
+		dashboard.setScore(score);
+	}
+	
 	// check if line is completed
 	private void checkGame() {
-		if (linesCompleted == 1){
-			newLevel(level + 1);
-		}
+		int totalLines = 0;
 		for (int i = 0; i < gridHeight; i++) {
 			boolean isFilled = true;
+			// if single cell is empty, line is not completed
 			for (int j = 0; j < gridWidth; j++) {
 				if (cellEmpty[i][j] == true) {
 					isFilled = false;
@@ -76,54 +103,67 @@ public class GameCourt extends JPanel {
 				}
 			}
 
+			// if line is completed, remove them from grid
 			if (isFilled) {
+				totalLines += 1;
 				linesCompleted += 1;
-				showLines.setText("" + linesCompleted);
+				dashboard.setLine(linesCompleted);
 				System.out.println("Lines Completed = " + linesCompleted);
-				for (int k = i; k > 0; k--) {
-					if (k == 0)
+				for (int k = i; k >= 0; k--) {
+					//if any line is completed, set first row to empty
+					if (k == 0){
+						for (int l = 0; l < cellEmpty[k].length; l++) {
+							cellEmpty[k][l] = false;
+							gridCell[0][l] = new EmptyCell(0 * cellSize, l * cellSize, 20,
+									Color.BLUE);
+						}
 						continue;
+					}
+//						
 					for (int l = 0; l < cellEmpty[k].length; l++) {
 						cellEmpty[k][l] = cellEmpty[k - 1][l];
+//						gridCell[k][l] = gridCell[k - 1][l];
 					}
 				}
 			}
+		}
+		
+		updateScore(totalLines);
+		System.out.println("Total lines completed this time = " + totalLines);
+		//level up is line completed is equal to certain amount
+		if (linesCompleted > 10){
+			newLevel(level + 1);
+			return;
 		}
 	}
 
 	// ticker
 	public void tick() {
 		if (playing) {
-			// boolean stepDown = true;
 			FilledCell[] ce = fallObj.getCell();
 
 			for (int i = 0; i < 4; i++) {
 				int x = ce[i].getI();
 				int y = ce[i].getJ();
-				// System.out.println("x = " + x);
-				// System.out.println("y = " + y);
-
-				int f = y;
-				if (f < gridHeight - 1) {
-					f = y + 1;
+				int y1 = y;
+				if (y1 < gridHeight - 1) {
+					y1 = y + 1;
 				}
 
-				if (f < 0) {
-					f = 0;
+				//if index is less than 0, change it to 0- a minimum value
+				if (y1 < 0) {
+					y1 = 0;
 				}
 				// check if next bottom grid is empty or not
-				// System.out.println("f = " + f + "Grid Height = " +
-				// gridHeight);
-				if (!cellEmpty[f][x] || y >= gridHeight - 1) {
+				// if not empty add the object to it top and continue game
+				if (!cellEmpty[y1][x] || y >= gridHeight - 1) {
 					System.out.println("Object Landed");
 					addCellToGrid(ce);
 					checkGame();
 					fallObj = makeNewObj();
 					nextObjectDisplay.setObject(nextFallObj);
-					nextObjectDisplay.repaint();
 					return;
 				}
-
 			}
 			fallObj.stepDown();
 			repaint();
@@ -145,17 +185,12 @@ public class GameCourt extends JPanel {
 		out = shapes[a];
 
 		if (nextFallObj != null) {
-			System.out.println("Next Object is not null");
 			Shape temp = nextFallObj;
 			nextFallObj = out;
 			return temp;
 		} else {
-			System.out.println("Next Object null");
 			int b = (int) Math.round(5 * Math.random());
 			nextFallObj = shapes[b];
-			if (nextFallObj != null) {
-				System.out.println("Next Object created");
-			}
 			return out;
 		}
 	}
@@ -168,6 +203,7 @@ public class GameCourt extends JPanel {
 		return linesCompleted;
 	}
 
+	//Add cells to grid and check if game is over
 	private void addCellToGrid(Cell[] cell) {
 		for (int i = 0; i < cell.length; i++) {
 			int x = cell[i].getI();
@@ -176,7 +212,6 @@ public class GameCourt extends JPanel {
 				System.err.println("Array ouf bound exception");
 				System.err.println("Game over");
 				gameOver.setVisible(true);
-//				lPane.setLayer(gameOver, 10);
 				lPane.setLayer(gameOver, 10000);
 				playing = false;
 				return;
@@ -186,6 +221,7 @@ public class GameCourt extends JPanel {
 		}
 	}
 
+	//if object can move right, move one step right
 	private void stepRight() {
 		Cell[] ce = fallObj.getCell();
 
@@ -193,18 +229,19 @@ public class GameCourt extends JPanel {
 			int x = ce[i].getI();
 			int y = ce[i].getJ();
 
-			int f = x;
-			if (f < gridWidth - 1) {
-				f = x + 1;
+			int x1 = x;
+			if (x1 < gridWidth - 1) {
+				x1 = x + 1;
 			}
-			// check if next bottom grid is empty or not
-			if (!cellEmpty[y][f] || x >= gridWidth - 1) {
+			// check if right grid is empty or not
+			if (!cellEmpty[y][x1] || x >= gridWidth - 1) {
 				return;
 			}
 		}
 		fallObj.stepRight();
 	}
 
+	//if object can move left, move one step left
 	private void stepLeft() {
 		Cell[] ce = fallObj.getCell();
 
@@ -224,6 +261,7 @@ public class GameCourt extends JPanel {
 		fallObj.stepLeft();
 	}
 
+	//if object can rotate, rotate clockwise
 	private void rotate() {
 		Cell[] ce = fallObj.getRotationCell();
 
@@ -242,59 +280,50 @@ public class GameCourt extends JPanel {
 		fallObj.rotate();
 	}
 
+	// control play and pause
 	public void pauseOrPlay() {
 		playing = !playing;
 	}
 
 	public void reset() {
+		playing = true;
 		fallObj = makeNewObj();
-		nextObjectDisplay.repaint();
-		repaint();
 		nextObjectDisplay.setObject(nextFallObj);
+		
+		timer.setDelay(INTERVAL[level]);
 		linesCompleted = 0;
+		score = 0;
+		
+		dashboard.setLevel(this.level);
+		dashboard.setLine(linesCompleted);
+		dashboard.setScore(0);
+		
+		gameOver.setVisible(false);
+		lPane.setLayer(gameOver, 0);
 
 		for (int i = 0; i < gridHeight; i++) {
 			for (int j = 0; j < gridWidth; j++) {
 				cellEmpty[i][j] = true;
 				gridCell[i][j] = new EmptyCell(i * cellSize, j * cellSize, 20,
-						Color.CYAN);
+						Color.GRAY);
 			}
 		}
-		playing = true;
-		gameOver.setVisible(false);
-		lPane.setLayer(gameOver, 0);
-		setFocusable(true);
 	}
 
 	public void newLevel(int level) {
+		//increase the level and reset
 		this.level = level;
-		INTERVAL = 400 / level;
-		timer.setDelay(INTERVAL);
-		fallObj = makeNewObj();
-		this.jlevel.setText("" + this.level);
-		repaint();
-		nextObjectDisplay.repaint();
-		nextObjectDisplay.setObject(nextFallObj);
-		linesCompleted = 0;
-
-		for (int i = 0; i < gridHeight; i++) {
-			for (int j = 0; j < gridWidth; j++) {
-				cellEmpty[i][j] = true;
-				gridCell[i][j] = new EmptyCell(i * cellSize, j * cellSize, 20,
-						Color.CYAN);
-			}
-		}
+		reset();
 	}
 
-	public GameCourt(NextObjectDisplay nextObject, JLabel level, JLabel lines,
-			JLabel score, JPanel gameOver, JLayeredPane lPane) {
-		showLines = lines;
+	public GameCourt(Dashboard dashboard, JPanel gameOver, JLayeredPane lPane) {
+		this.level = 1;
 		fallObj = makeNewObj();
-		this.jlevel = level;
+		this.dashboard = dashboard;
 		this.gameOver = gameOver;
 		this.lPane = lPane;
 
-		nextObjectDisplay = nextObject;
+		nextObjectDisplay = dashboard.getNextObjectDisplay();
 		nextObjectDisplay.setObject(nextFallObj);
 
 		System.out.println("Height = " + gridHeight);
@@ -306,14 +335,14 @@ public class GameCourt extends JPanel {
 			for (int j = 0; j < gridWidth; j++) {
 				cellEmpty[i][j] = true;
 				gridCell[i][j] = new EmptyCell(i * cellSize, j * cellSize, 20,
-						Color.CYAN);
+						Color.GRAY);
 			}
 		}
 
 		setFocusable(true);
 
 		// initiate the timer
-		timer = new Timer(getInterval(), new ActionListener() {
+		timer = new Timer(INTERVAL[level], new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tick();
@@ -354,7 +383,7 @@ public class GameCourt extends JPanel {
 
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					timer.setDelay(getInterval());
+					timer.setDelay(INTERVAL[level]);
 				}
 			}
 		});

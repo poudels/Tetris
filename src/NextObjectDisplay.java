@@ -18,5 +18,6 @@ public class NextObjectDisplay extends JPanel{
 	
 	public void setObject(Shape s){
 		shape = s;
+		repaint();
 	}
 }

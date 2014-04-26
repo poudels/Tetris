@@ -1,92 +1,121 @@
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Dashboard extends JPanel {
-	private JPanel dashboard;
-	final NextObjectDisplay nextObject;
-	final JPanel levelDisp;
-//	final JLabel levelLabel;
-	final JLabel level;
-	final JPanel lineDisp;
-	final JLabel lineLabel;
-	final JLabel lines;
-	final JPanel scoreDisp;
-	final JLabel scoreLabel;
-	final JLabel score;
-	final JLabel highScore;
+	NextObjectDisplay nextObject;
+	JPanel levelDisp;
+	JLabel level;
+	JPanel lineDisp;
+	JLabel lines;
+	JPanel scoreDisp;
+	JLabel scoreLabel;
+	JLabel score;
+	JLabel hsLabel;
+	JLabel hScore;
+	Highscore hs;
+	int highscore;
 	
-	
-	private JLabel styledLabel(String text, int width, int height, JPanel parent){
+
+	private JLabel styledLabel(String text, int font, int width, int height,
+			JPanel parent) {
 		JLabel jl = new JLabel(text);
-		jl.setFont(new Font("Hobo Std", 1, 25));
+		jl.setFont(new Font("Hobo Std", 1, font));
 		jl.setPreferredSize(new Dimension(width, height));
 		return jl;
 	}
-	
+
 	public Dashboard() {
 		// Dashboard
-		dashboard = new JPanel();
-		dashboard.setPreferredSize(new Dimension(180, 200));
+		super();
+		setPreferredSize(new Dimension(180, 400));
 
 		// Show next Object
 		nextObject = new NextObjectDisplay();
-		nextObject.setPreferredSize(new Dimension(180, 150));
-		dashboard.add(nextObject);
+		nextObject.setPreferredSize(new Dimension(260, 150));
+		super.add(nextObject);
 
 		// Add level label
 		levelDisp = new JPanel();
-		
-//		levelLabel = styledLabel("Level = ", 100, 30, levelDisp);
-		levelDisp.add(styledLabel("Level = ", 100, 30, levelDisp));
 
-		level = styledLabel("1", 50, 30, levelDisp);
+		// levelLabel = styledLabel("Level = ", 100, 30, levelDisp);
+		levelDisp.add(styledLabel("Level : ", 25, 100, 30, levelDisp));
+
+		level = styledLabel("1", 25, 50, 30, levelDisp);
 		levelDisp.add(level);
 
-		dashboard.add(levelDisp);
+		super.add(levelDisp);
 
 		// Add Lines label
 		lineDisp = new JPanel();
 
-		lineLabel = styledLabel("Line = ", 100, 30, levelDisp);
-		lineDisp.add(lineLabel);
-		
-		lines = styledLabel("0", 100, 30, levelDisp);
+		// lineLabel = styledLabel("Line = ", 100, 30, levelDisp);
+		lineDisp.add(styledLabel("Line : ", 25, 100, 30, levelDisp));
+
+		lines = styledLabel("0", 25, 50, 30, lineDisp);
 		lineDisp.add(lines);
 
-		dashboard.add(lineDisp);
+		super.add(lineDisp);
 
-		scoreDisp = new JPanel();
-		
-		scoreLabel = styledLabel("Score = ", 100, 30, levelDisp);
+		scoreDisp = new JPanel(new GridLayout(2, 1));
+
+		scoreLabel = styledLabel("Score : ", 25, 100, 30, scoreDisp);
 		scoreDisp.add(scoreLabel);
 
-		score = styledLabel("0", 100, 30, levelDisp);
+		score = styledLabel("0", 20, 50, 30, scoreDisp);
 		scoreDisp.add(score);
 
-		dashboard.add(scoreDisp);
+		super.add(scoreDisp);
 
 		// Add highScore label
-		highScore = new JLabel("Highscore = 0 ");
-		highScore.setFont(new Font("Hobo Std", 1, 25));
-		dashboard.add(highScore);
+		JPanel highScoreDisp = new JPanel();
+		// get highscore from file
+		hs = new Highscore("hsScore.txt");
+		highscore = Integer.parseInt(hs.getHighscore());
+
+		hsLabel = styledLabel("Highscore : ", 25, 140, 30, scoreDisp);
+		super.add(hsLabel);
+		hScore = styledLabel(("" + highscore), 20, 100, 30, scoreDisp);
+		super.add(highScoreDisp);
+		super.add(hScore);
+
+		// super.add(highScoreDisp);
 	}
-	
-	public void setLevel(int x){
+
+	public NextObjectDisplay getNextObjectDisplay() {
+		return nextObject;
+	}
+
+	public void setLevel(int x) {
 		level.setText("" + x);
 	}
-	
-	public void setScore(int x){
+
+	public void setScore(int x) {
 		score.setText("" + x);
+		if(x > highscore){
+			highscore = x;
+			hScore.setText("" + highscore);
+			hs.setHighscore("" + highscore);
+		}
 	}
-	
-	public void setLine(int x){
+
+	public void setLine(int x) {
 		lines.setText("" + x);
 	}
-	
-	public void setHighscore(int x){
-		highScore.setText("" + x);
+
+	public void setHighscore(int x) {
+		hsLabel.setText("" + x);
 	}
 }

@@ -8,7 +8,7 @@ public class FilledCell implements Cell{
 	private int POS_X = 0;
 	private int POS_Y = 0;
 	
-	public FilledCell(int x, int y, int s, Color c){
+	public FilledCell(int y, int x, int s, Color c){
 		POS_X = x;
 		POS_Y = y;
 		size = s;
@@ -26,5 +26,9 @@ public class FilledCell implements Cell{
 	
 	public int getJ(){
 		return (POS_Y / size);
+	}
+	
+	public Color getColor(){
+		return color;
 	}
 }

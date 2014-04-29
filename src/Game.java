@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -8,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -164,22 +166,24 @@ public class Game implements Runnable {
 		
 		
 		//Game over window
-		gameOver = new JPanel(new BorderLayout());
+		gameOver = new JPanel();
+		gameOver.setLayout(new BoxLayout(gameOver, BoxLayout.PAGE_AXIS));
 		gameOver.setPreferredSize(new Dimension(500,440));
+		
 		JLabel gOverText = new JLabel("Game over");
-		gOverText.setFont(new Font("Hobo Std", 1, 30));
-		gOverText.setPreferredSize(new Dimension(150,220));
-		gameOver.add(gOverText,BorderLayout.NORTH);
+		gOverText.setFont(new Font("Hobo Std", 1, 33));
+		gOverText.setAlignmentX(Component.CENTER_ALIGNMENT);
+		gameOver.add(gOverText);
 		
 		JLabel newGameText = new JLabel("New Game");
-		newGameText.setFont(new Font("Hobo Std", 1, 30));
-		newGameText.setPreferredSize(new Dimension(150,220));
+		newGameText.setFont(new Font("Hobo Std", 1, 22));
+		newGameText.setAlignmentX(Component.CENTER_ALIGNMENT);
 		newGameText.addMouseListener(new ListenMouse(){
 			public void mousePressed(MouseEvent e) {
 				gameCourt.reset();
 			}
 		});
-		gameOver.add(newGameText, BorderLayout.CENTER);
+		gameOver.add(newGameText);
 		
 		
 		gameOver.setBounds(0, 0, 500, 440);

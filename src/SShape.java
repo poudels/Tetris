@@ -62,7 +62,7 @@ public class SShape implements Shape{
 	public FilledCell[] getCell() {
 		FilledCell[] c = new FilledCell[4];
 		for (int i = 0; i < 4; i++) {
-			c[i] = new FilledCell(orientX()[orient][i], orientY()[orient][i], scale, color);
+			c[i] = new FilledCell(orientY()[orient][i], orientX()[orient][i], scale, color);
 		}
 		return c;
 	}
@@ -71,7 +71,7 @@ public class SShape implements Shape{
 		FilledCell[] c = new FilledCell[4];
 		int o = (orient + 1) % 4;
 		for (int i = 0; i < 4; i++) {
-			c[i] = new FilledCell(orientX()[o][i], orientY()[o][i], scale, color);
+			c[i] = new FilledCell(orientY()[o][i], orientX()[o][i], scale, color);
 		}
 		return c;
 	}

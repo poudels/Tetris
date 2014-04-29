@@ -3,6 +3,9 @@ public class Square extends SShape {
 	@Override
 	protected int[][] orientX() {
 		int[][] out = {
+				{getPosX(), getPosX() + scale, getPosX() + scale, getPosX()},
+				{getPosX(), getPosX() + scale, getPosX() + scale, getPosX()},
+				{getPosX(), getPosX() + scale, getPosX() + scale, getPosX()},
 				{getPosX(), getPosX() + scale, getPosX() + scale, getPosX()}
 			};
 		return out;
@@ -11,6 +14,9 @@ public class Square extends SShape {
 	@Override
 	protected int[][] orientY() {
 		int[][] out = {
+				{getPosY(), getPosY(), getPosY() - scale, getPosY() - scale},
+				{getPosY(), getPosY(), getPosY() - scale, getPosY() - scale},
+				{getPosY(), getPosY(), getPosY() - scale, getPosY() - scale},
 				{getPosY(), getPosY(), getPosY() - scale, getPosY() - scale}
 			};
 		return out;

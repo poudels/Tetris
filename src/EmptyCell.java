@@ -17,6 +17,7 @@ public class EmptyCell implements Cell{
 	
 	public void draw(Graphics g){
 		g.setColor(color);
+		
 		g.drawRect(POS_X, POS_Y, size, size);
 	}
 	
@@ -26,5 +27,9 @@ public class EmptyCell implements Cell{
 	
 	public int getJ(){
 		return (POS_Y / size);
+	}
+	
+	public Color getColor(){
+		return null;
 	}
 }
